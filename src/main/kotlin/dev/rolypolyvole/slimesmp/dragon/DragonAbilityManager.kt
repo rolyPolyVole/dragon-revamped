@@ -1,15 +1,13 @@
 package dev.rolypolyvole.slimesmp.dragon
 
-import dev.rolypolyvole.slimesmp.util.toVec3
-import net.minecraft.core.BlockPos
+import dev.rolypolyvole.slimesmp.worldgen.CustomEndSpikes
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon
-import net.minecraft.world.level.Level
-import net.minecraft.world.level.levelgen.feature.SpikeFeature
 import net.minecraft.world.phys.AABB
+import net.minecraft.world.phys.Vec3
 
 
 class DragonAbilityManager(private val dragon: EnderDragon) {
@@ -30,22 +28,13 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
     }
 
     private fun respawnCrystal() {
-        val pos = SpikeFeature.getSpikesForLevel(level)
-            .map { BlockPos(it.centerX, it.height + 1, it.centerZ) }
+        val pos = CustomEndSpikes.CRYSTAL_LOCATIONS
             .filterNot(::doesCrystalExist)
             .randomOrNull() ?: return
 
         val crystal = EntityType.END_CRYSTAL.create(level, EntitySpawnReason.EVENT) ?: return
-        val vec3 = pos.toVec3().add(0.5, 0.5, 0.5)
 
-        level.explode(
-            null,
-            vec3.x, vec3.y, vec3.z,
-            6.0F, false,
-            Level.ExplosionInteraction.TRIGGER
-        )
-
-        crystal.setPos(pos.x + 0.5, pos.y.toDouble(), pos.z + 0.5)
+        crystal.setPos(pos)
         crystal.setShowBottom(true)
         crystal.beamTarget = null
 
@@ -59,8 +48,10 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
         }
     }
 
-    private fun doesCrystalExist(pos: BlockPos): Boolean {
-        return !level.getEntitiesOfClass(EndCrystal::class.java, AABB(pos).inflate(1.5)).isEmpty()
+    private fun doesCrystalExist(vec: Vec3): Boolean {
+        val aabb = AABB(vec.add(-0.5, -0.5, -0.5), vec.add(0.5, 0.5, 0.5)).inflate(1.5)
+
+        return !level.getEntitiesOfClass(EndCrystal::class.java, aabb).isEmpty()
     }
 
     private fun getTotalCrystals(): Int {
