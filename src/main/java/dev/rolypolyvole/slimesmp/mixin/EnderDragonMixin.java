@@ -20,6 +20,7 @@ import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhaseManage
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -174,6 +175,11 @@ abstract class EnderDragonMixin extends Mob implements Enemy {
         int ticksSinceLastHurt = tickCount - getLastHurtByMobTimestamp();
 
         return ticksSinceLastHurt > 200 ? 8.0F : 2.0F;
+    }
+
+    @Redirect(method = "aiStep()V", at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/boss/enderdragon/EnderDragon;hurtTime:I", opcode = Opcodes.GETFIELD), require = 1)
+    private int ignoreHurtTime(EnderDragon instance) {
+        return 0;
     }
 
     @Redirect(method = "aiStep()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/boss/enderdragon/phases/DragonPhaseInstance;getFlySpeed()F"))
