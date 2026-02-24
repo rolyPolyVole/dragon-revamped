@@ -53,6 +53,8 @@ class LightningAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
 
         if (ticks < 60) return
 
+        playEffect()
+
         level.players()
             .filter(::isPlayerExposed)
             .forEach(::strikePlayer)
@@ -123,5 +125,15 @@ class LightningAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
 
         val source = DragonDamageTypes.dragonLightning(level, dragon)
         player.hurtServer(level, source, 11.5f)
+    }
+
+    private fun playEffect() {
+        EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.MOB_SUMMONED)?.let {
+            it.snapTo(dragon.position())
+            it.setVisualOnly(true)
+            level.addFreshEntity(it)
+        }
+
+        broadcastSound(SoundEvents.LIGHTNING_BOLT_THUNDER)
     }
 }
