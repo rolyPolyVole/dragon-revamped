@@ -47,10 +47,6 @@ class LightningAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
             broadcastSound(SoundEvents.ENDER_DRAGON_GROWL)
         }
 
-        if (ticks < 10) {
-            broadcastSound(SoundEvents.LIGHTNING_BOLT_THUNDER)
-        }
-
         level.players().filter(::isPlayerExposed).forEach {
             playSound(it, SoundEvents.FLINTANDSTEEL_USE, pitch = 2.0F)
         }
@@ -89,7 +85,7 @@ class LightningAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
         dragon.phaseManager.setPhase(EnderDragonPhase.CHARGING_PLAYER)
         dragon.phaseManager.getPhase(EnderDragonPhase.CHARGING_PLAYER).setTarget(outpost)
 
-        broadcastSound(SoundEvents.ENDER_DRAGON_GROWL)
+        broadcastSound(SoundEvents.LIGHTNING_BOLT_THUNDER)
 
         return true
     }
