@@ -7,6 +7,7 @@ class DragonAttackManager(private val dragon: EnderDragon) {
     private val attacks = listOf(
         ChargeAttack.ChargeAttackType,
         ChargeAttack.ChargeAttackType,
+        ChargeAttack.ChargeAttackType,
         FireballAttack.FireballAttackType,
         LightningAttack.LightningAttackType,
         BombAttack.BombAttackType
