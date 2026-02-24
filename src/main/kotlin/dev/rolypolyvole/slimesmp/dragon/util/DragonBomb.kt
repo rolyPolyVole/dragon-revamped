@@ -16,7 +16,7 @@ import org.joml.Quaternionf
 import org.joml.Vector3f
 
 class DragonBomb(level: Level, private val dragon: EnderDragon) : Marker(EntityType.MARKER, level) {
-    private val display: Display.BlockDisplay = createDisplay()
+    private val display: NonPersistentBlockDisplay = createDisplay()
     private var velocity = Vec3.ZERO
 
     init {
@@ -47,6 +47,8 @@ class DragonBomb(level: Level, private val dragon: EnderDragon) : Marker(EntityT
         super.remove(reason)
     }
 
+    override fun shouldBeSaved() = false
+
     private fun applyDownwardsAcceleration() {
         this.velocity = velocity.add(0.0, -0.04, 0.0)
     }
@@ -61,7 +63,7 @@ class DragonBomb(level: Level, private val dragon: EnderDragon) : Marker(EntityT
     }
 
     private fun explode() {
-        val groundY = blockPosition().below().y + 1.0
+        val groundY = blockPosition().below().y + 1.1
 
         (level() as ServerLevel).explode(
             this,
@@ -76,8 +78,8 @@ class DragonBomb(level: Level, private val dragon: EnderDragon) : Marker(EntityT
         remove(RemovalReason.DISCARDED)
     }
 
-    private fun createDisplay(): Display.BlockDisplay {
-        val display = Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level())
+    private fun createDisplay(): NonPersistentBlockDisplay {
+        val display = NonPersistentBlockDisplay(level())
 
         display.setPos(x, y, z)
         display.blockState = net.minecraft.world.level.block.Blocks.DRAGON_HEAD.defaultBlockState()
@@ -119,4 +121,8 @@ class DragonBomb(level: Level, private val dragon: EnderDragon) : Marker(EntityT
         private const val SCALE = 1.7f
         private val OFFSET = Vector3f(-0.85f, -0.2f, -1.0f)
     }
+}
+
+class NonPersistentBlockDisplay(level: Level) : Display.BlockDisplay(EntityType.BLOCK_DISPLAY, level) {
+    override fun shouldBeSaved(): Boolean = false
 }
