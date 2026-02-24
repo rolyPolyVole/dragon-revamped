@@ -40,20 +40,6 @@ class ChargeAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
             val vector = targetLocation!!.subtract(dragon.position()).reverse()
             dragon.lookAt(EntityAnchorArgument.Anchor.FEET, dragon.position().add(vector))
         }
-
-        if (direction == null) return
-
-        if (phase is DragonHoldingPatternPhase && !resurfacing) {
-            this.resurfacing = true
-
-            val horizontal = direction!!.multiply(1.0, 0.0, 1.0).normalize()
-            val newDirection = Vec3(horizontal.x, 1.0, horizontal.z).normalize()
-
-            this.targetLocation = dragon.position().add(newDirection.scale(50.0))
-
-            dragon.phaseManager.setPhase(EnderDragonPhase.CHARGING_PLAYER)
-            dragon.phaseManager.getPhase(EnderDragonPhase.CHARGING_PLAYER).setTarget(targetLocation!!)
-        }
     }
 
     override fun beforeMove() {
@@ -63,6 +49,22 @@ class ChargeAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
         if (ticks == 20) {
             this.targetLocation = this.getTargetLocation()
             this.direction = targetLocation!!.subtract(dragon.position()).normalize()
+        }
+
+        if (!resurfacing && ticks > 20) {
+            val remaining = targetLocation!!.subtract(dragon.position())
+
+            if (remaining.dot(direction!!) <= 0 || dragon.position().distanceTo(targetLocation!!) < 5.0) {
+                this.resurfacing = true
+
+                val horizontal = direction!!.multiply(1.0, 0.0, 1.0).normalize()
+                val newDirection = Vec3(horizontal.x, 1.0, horizontal.z).normalize()
+
+                this.targetLocation = dragon.position().add(newDirection.scale(50.0))
+
+                dragon.phaseManager.setPhase(EnderDragonPhase.CHARGING_PLAYER)
+                dragon.phaseManager.getPhase(EnderDragonPhase.CHARGING_PLAYER).setTarget(targetLocation!!)
+            }
         }
 
         val to = targetLocation!!.subtract(dragon.position())
@@ -77,7 +79,9 @@ class ChargeAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
     }
 
     override fun shouldEnd(): Boolean {
-        return shouldEnd || (phase !is DragonChargePlayerPhase && resurfacing) || ticks > 200
+        if (shouldEnd || ticks > 200) return true
+        if (resurfacing) return dragon.position().distanceTo(targetLocation!!) < 5.0
+        return false
     }
 
     override fun start(): Boolean {
