@@ -7,6 +7,10 @@
 
 # IntelliJ
 out/
+
+# Claude
+CLAUDE.md
+
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
