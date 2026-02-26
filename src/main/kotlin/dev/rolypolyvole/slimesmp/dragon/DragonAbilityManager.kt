@@ -35,7 +35,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
         val crystal = EntityType.END_CRYSTAL.create(level, EntitySpawnReason.EVENT) ?: return
 
         crystal.setPos(pos)
-        crystal.setShowBottom(true)
+        crystal.setShowBottom(false)
         crystal.beamTarget = null
 
         level.addFreshEntity(crystal)
