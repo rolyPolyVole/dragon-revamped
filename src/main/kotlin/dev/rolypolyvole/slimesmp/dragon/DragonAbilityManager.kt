@@ -23,7 +23,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
             this.ticksUntilCrystalRespawn--
         } else {
             respawnCrystal()
-            this.ticksUntilCrystalRespawn = (200..300).random() + (getTotalCrystals() * 10)
+            this.ticksUntilCrystalRespawn = (200..300).random() + (getTotalCrystals() * 20)
         }
     }
 
@@ -55,6 +55,6 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
     }
 
     private fun getTotalCrystals(): Int {
-        return level.allEntities.filterIsInstance<EndCrystal>().size
+        return CustomEndSpikes.getCrystalLocations(level).filter(::doesCrystalExist).size
     }
 }
