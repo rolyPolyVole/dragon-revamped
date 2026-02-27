@@ -53,6 +53,20 @@ class ChargeAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
             this.direction = targetLocation!!.subtract(dragon.position()).normalize()
         }
 
+        if (!resurfacing && ticks > 20 && ticks % 5 == 0) {
+            val player = target ?: return
+            if (!player.hasDisconnected() && player.isAlive) {
+                val newTarget = getTargetLocation()
+                if (newTarget.distanceToSqr(targetLocation!!) < 100.0) {
+                    this.targetLocation = newTarget
+                    this.direction = targetLocation!!.subtract(dragon.position()).normalize()
+
+                    dragon.phaseManager.setPhase(EnderDragonPhase.CHARGING_PLAYER)
+                    dragon.phaseManager.getPhase(EnderDragonPhase.CHARGING_PLAYER).setTarget(targetLocation!!)
+                }
+            }
+        }
+
         if (!resurfacing && ticks > 20) {
             val currentTarget = targetLocation ?: return
             val currentDirection = direction ?: return
@@ -65,9 +79,6 @@ class ChargeAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
                 val newDirection = Vec3(horizontal.x, 1.0, horizontal.z).normalize()
 
                 this.targetLocation = dragon.position().add(newDirection.scale(50.0))
-
-                dragon.phaseManager.setPhase(EnderDragonPhase.CHARGING_PLAYER)
-                dragon.phaseManager.getPhase(EnderDragonPhase.CHARGING_PLAYER).setTarget(targetLocation!!)
             }
         }
 
@@ -89,7 +100,7 @@ class ChargeAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
     }
 
     override fun start(): Boolean {
-        this.target = level.players()
+        this.target = nearbyPlayers()
             .filter(::isTargetValid)
             .randomOrNull()
             ?: run { this.shouldEnd = true; return false }
@@ -105,6 +116,7 @@ class ChargeAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
     }
 
     override fun end() {
+        this.dragon.phaseManager.setPhase(EnderDragonPhase.HOLDING_PATTERN)
     }
 
     private fun isTargetValid(player: Player): Boolean =
