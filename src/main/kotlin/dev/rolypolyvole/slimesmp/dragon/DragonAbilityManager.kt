@@ -42,8 +42,11 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
 
         level.addFreshEntity(crystal)
 
+        val center = dragon.fightOrigin.center
+
         dragon.level().players()
             .map { it as ServerPlayer }
+            .filter { it.position().distanceToSqr(center) < 40000.0 }
             .forEach {
                 it.sendSystemMessage(Component.literal("An End Crystal has respawned!").withColor(0xFF55FF))
             }

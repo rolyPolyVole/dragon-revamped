@@ -65,7 +65,7 @@ class FireballAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
                 return
             }
 
-            this.target = level.players()
+            this.target = nearbyPlayers()
                 .filter { !it.isCreative && !it.isSpectator && it.isAlive }
                 .filter { it.position().distanceToSqr(dragon.position()) < 22500.0 }
                 .filter { dragon.hasLineOfSight(it) }

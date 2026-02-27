@@ -47,7 +47,7 @@ class LightningAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
             broadcastSound(SoundEvents.ENDER_DRAGON_GROWL)
         }
 
-        level.players().filter(::isPlayerExposed).forEach {
+        nearbyPlayers().filter(::isPlayerExposed).forEach {
             playSound(it, SoundEvents.FLINTANDSTEEL_USE, pitch = 2.0F)
         }
 
@@ -55,7 +55,7 @@ class LightningAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
 
         playEffect()
 
-        level.players()
+        nearbyPlayers()
             .filter(::isPlayerExposed)
             .forEach(::strikePlayer)
 

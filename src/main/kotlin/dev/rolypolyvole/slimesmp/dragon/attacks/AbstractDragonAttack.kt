@@ -11,14 +11,16 @@ import net.minecraft.world.entity.boss.enderdragon.phases.DragonPhaseInstance
 import kotlin.reflect.KClass
 
 abstract class AbstractDragonAttack(protected val dragon: EnderDragon) {
-    protected val phase: DragonPhaseInstance
-        get() = dragon.phaseManager.currentPhase
-
     protected val level: ServerLevel
         get() = dragon.level() as ServerLevel
 
+    protected fun nearbyPlayers(): List<ServerPlayer> {
+        val center = dragon.fightOrigin.center
+        return level.players().filter { it.position().distanceToSqr(center) < 40000.0 }
+    }
+
     protected fun broadcastSound(sound: SoundEvent, volume: Float = 1.0F, pitch: Float = 1.0F) {
-        level.players().forEach { playSound(it, sound, volume, pitch) }
+        nearbyPlayers().forEach { playSound(it, sound, volume, pitch) }
     }
 
     protected fun playSound(player: ServerPlayer, sound: SoundEvent, volume: Float = 1.0F, pitch: Float = 1.0F) {

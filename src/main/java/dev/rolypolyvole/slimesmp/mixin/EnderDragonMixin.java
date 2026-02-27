@@ -32,6 +32,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.world.phys.Vec3;
+
 import java.util.List;
 
 @Mixin(EnderDragon.class)
@@ -74,6 +76,14 @@ abstract class EnderDragonMixin extends Mob implements Enemy {
         return (EnderDragon)(Object) this;
     }
 
+    @Unique
+    private long nearbyPlayerCount() {
+        Vec3 center = self().getFightOrigin().getCenter();
+        return level().players().stream()
+            .filter(p -> p.position().distanceToSqr(center) < 40000.0)
+            .count();
+    }
+
     @Inject(method = "aiStep()V", at = @At("TAIL"))
     private void tick(CallbackInfo info) {
         if (this.level().isClientSide()) return;
@@ -88,7 +98,7 @@ abstract class EnderDragonMixin extends Mob implements Enemy {
 
     @Unique
     private void updateMaxHealth() {
-        double playerCount = Math.max(level().players().size(), 1);
+        double playerCount = Math.max(nearbyPlayerCount(), 1);
         double newMax = 800.0 + 700 * Math.sqrt(playerCount - 1);
         double oldMax = this.getMaxHealth();
 
@@ -182,7 +192,7 @@ abstract class EnderDragonMixin extends Mob implements Enemy {
     @ModifyConstant(method = "checkCrystals()V", constant = @org.spongepowered.asm.mixin.injection.Constant(floatValue = 1.0F))
     private float customCrystalHeal(float original) {
         int ticksSinceLastHurt = tickCount - getLastHurtByMobTimestamp();
-        double playerCount = Math.max(level().players().size(), 1);
+        double playerCount = Math.max(nearbyPlayerCount(), 1);
         int threshold = (int) (100 + 150 / Math.sqrt(playerCount));
 
         return ticksSinceLastHurt > threshold ? 8.0F : 2.0F;
