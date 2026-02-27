@@ -90,7 +90,7 @@ abstract class EnderDragonMixin extends Mob implements Enemy {
 
         updateMaxHealth();
 
-        if (tickCount > 10 * 20 && !isDeadOrDying()) {
+        if (!isDeadOrDying()) {
             if (attackManager != null) attackManager.tick();
             if (abilityManager != null) abilityManager.tick();
         }
@@ -113,7 +113,7 @@ abstract class EnderDragonMixin extends Mob implements Enemy {
     private void beforeMove(CallbackInfo info) {
         if (this.level().isClientSide()) return;
 
-        if (attackManager != null && tickCount > 15 * 20 && !isDeadOrDying()) attackManager.onBeforeMove();
+        if (attackManager != null && !isDeadOrDying()) attackManager.onBeforeMove();
     }
 
     @Inject(method = "hurt(Lnet/minecraft/server/level/ServerLevel;Ljava/util/List;)V", at = @At("HEAD"), cancellable = true)
