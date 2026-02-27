@@ -4,6 +4,7 @@ import dev.rolypolyvole.slimesmp.worldgen.CustomEndSpikes
 import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.server.level.ServerPlayer
+import net.minecraft.sounds.SoundEvents
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal
@@ -16,7 +17,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
     private val level = dragon.level() as ServerLevel
 
     private var ticks = 0
-    private var ticksUntilCrystalRespawn = 0
+    private var ticksUntilCrystalRespawn = 450
 
     fun tick () {
         this.ticks++
@@ -38,7 +39,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
 
         crystal.setPos(pos)
         crystal.setShowBottom(false)
-        crystal.beamTarget = null
+        crystal.playSound(SoundEvents.BEACON_ACTIVATE)
 
         level.addFreshEntity(crystal)
 
