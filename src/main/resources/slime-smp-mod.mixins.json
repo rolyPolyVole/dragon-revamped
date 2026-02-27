@@ -7,7 +7,9 @@
         "DragonHoldingPatternPhaseMixin",
         "DragonStrafePlayerPhaseMixin",
         "EndCrystalMixin",
+        "EndDragonFightMixin",
         "EnderDragonMixin",
+        "EnderManMixin",
         "EndSpikeMixin",
         "ServerPlayerMixin",
         "SpikeCacheLoaderMixin"
