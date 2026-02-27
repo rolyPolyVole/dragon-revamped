@@ -26,8 +26,10 @@ class ExplosiveDragonFireball(level: Level, owner: LivingEntity, direction: Vec3
     override fun shouldBeSaved(): Boolean = false
 
     override fun onHit(hitResult: HitResult) {
-        if (hitResult.type == HitResult.Type.ENTITY && ownedBy((hitResult as EntityHitResult).entity)) return
-        if (level().isClientSide) return
+        if (hitResult.type == HitResult.Type.ENTITY && hitResult is EntityHitResult) {
+            if (ownedBy(hitResult.entity)) return
+            if (hitResult.entity.noPhysics) return
+        }
 
         val serverLevel = level() as ServerLevel
         val pos = hitResult.location
@@ -44,7 +46,7 @@ class ExplosiveDragonFireball(level: Level, owner: LivingEntity, direction: Vec3
             damageSources().explosion(this, dragon),
             null,
             pos.x, pos.y, pos.z,
-            3.0f,
+            2.0F + (0.7 * Math.random()).toFloat(),
             false,
             Level.ExplosionInteraction.MOB
         )
