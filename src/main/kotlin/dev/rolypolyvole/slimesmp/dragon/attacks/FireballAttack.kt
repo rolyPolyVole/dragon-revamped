@@ -84,7 +84,7 @@ class FireballAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
         val vector = target.position().subtract(dragon.position()).multiply(-1.0, -1.0, -1.0)
         dragon.lookAt(EntityAnchorArgument.Anchor.FEET, dragon.position().add(vector))
 
-        if (ticks % 15 == 0) {
+        if (ticks % 20 == 0) {
             shootFireballAt(target.position())
         }
     }
