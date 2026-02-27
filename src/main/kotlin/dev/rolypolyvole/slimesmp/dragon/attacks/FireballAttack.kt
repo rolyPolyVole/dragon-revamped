@@ -1,11 +1,11 @@
 package dev.rolypolyvole.slimesmp.dragon.attacks
 
+import dev.rolypolyvole.slimesmp.dragon.util.ExplosiveDragonFireball
 import net.minecraft.commands.arguments.EntityAnchorArgument
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon
 import net.minecraft.world.entity.boss.enderdragon.phases.*
-import net.minecraft.world.entity.projectile.hurtingprojectile.DragonFireball
 import net.minecraft.world.phys.Vec3
 import kotlin.reflect.KClass
 
@@ -144,9 +144,9 @@ class FireballAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
 
         level.levelEvent(null, 1017, dragon.blockPosition(), 0)
 
-        val dragonFireball = DragonFireball(level, dragon, velocity)
-        dragonFireball.accelerationPower = 0.25
-        dragonFireball.snapTo(mouth.x, mouth.y, mouth.z, 0.0f, 0.0f)
-        level.addFreshEntity(dragonFireball)
+        val fireball = ExplosiveDragonFireball(level, dragon, velocity)
+        fireball.snapTo(mouth.x, mouth.y, mouth.z, 0.0f, 0.0f)
+        fireball.deltaMovement = velocity.scale(2.5)
+        level.addFreshEntity(fireball)
     }
 }
