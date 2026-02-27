@@ -34,6 +34,7 @@ class FireballAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
     private lateinit var outpost: Vec3
     private var reachedOutpost = false
 
+    private var roarTicks = 0
     private var ticks = 0
 
     private var ticksUntilChangeTarget = 0
@@ -43,6 +44,10 @@ class FireballAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
     private var shouldEnd: Boolean = false
 
     override fun tick() {
+        if (roarTicks++ <= 10) {
+            broadcastSound(SoundEvents.ENDER_DRAGON_GROWL, pitch = 0.8F + random * 0.3F)
+        }
+
         if (!reachedOutpost) return
 
         if (ticks == 0) {
