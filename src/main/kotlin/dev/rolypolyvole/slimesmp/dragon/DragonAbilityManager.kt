@@ -1,7 +1,9 @@
 package dev.rolypolyvole.slimesmp.dragon
 
 import dev.rolypolyvole.slimesmp.worldgen.CustomEndSpikes
+import net.minecraft.network.chat.Component
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.server.level.ServerPlayer
 import net.minecraft.world.entity.EntitySpawnReason
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.boss.enderdragon.EndCrystal
@@ -40,12 +42,11 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
 
         level.addFreshEntity(crystal)
 
-        dragon.level().players().forEach {
-            it.displayClientMessage(
-                net.minecraft.network.chat.Component.literal("An end crystal has respawned!"),
-                false
-            )
-        }
+        dragon.level().players()
+            .map { it as ServerPlayer }
+            .forEach {
+                it.sendSystemMessage(Component.literal("An End Crystal has respawned!").withColor(0xFF55FF))
+            }
     }
 
     private fun doesCrystalExist(vec: Vec3): Boolean {
