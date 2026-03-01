@@ -1,12 +1,15 @@
 package dev.rolypolyvole.slimesmp.dragon.attacks
 
 import dev.rolypolyvole.slimesmp.dragon.util.ExplosiveDragonFireball
-import net.minecraft.commands.arguments.EntityAnchorArgument
+import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.core.particles.PowerParticleOption
 import net.minecraft.server.level.ServerPlayer
 import net.minecraft.sounds.SoundEvents
+import net.minecraft.util.Mth
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon
 import net.minecraft.world.entity.boss.enderdragon.phases.*
 import net.minecraft.world.phys.Vec3
+import kotlin.math.*
 import kotlin.reflect.KClass
 
 class FireballAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
@@ -52,6 +55,8 @@ class FireballAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
             broadcastSound(SoundEvents.ENDER_DRAGON_GROWL, pitch = 0.8F + random * 0.3F)
         }
 
+        spawnMouthBreathParticles()
+
         if (ticks++ < 40) return
 
         if (ticks > 15 * 20) {
@@ -73,7 +78,7 @@ class FireballAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
                 .filter { dragon.hasLineOfSight(it) }
                 .randomOrNull() ?: run { shouldEnd = true; return }
 
-            this.ticksUntilChangeTarget = (60..90).random()
+            this.ticksUntilChangeTarget = (45..65).random()
             this.targeted++
         }
 
@@ -83,8 +88,7 @@ class FireballAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
             return
         }
 
-        val vector = target.position().subtract(dragon.position()).multiply(-1.0, -1.0, -1.0)
-        dragon.lookAt(EntityAnchorArgument.Anchor.FEET, dragon.position().add(vector))
+        smoothLookAt(target.position())
 
         if (ticks % 20 == 0) {
             shootFireballAt(target.position())
@@ -134,6 +138,41 @@ class FireballAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
             75.0 + random * 35.0,
             random * 100.0 - 50.0
         )
+    }
+
+    private fun smoothLookAt(targetPos: Vec3) {
+        val dx = targetPos.x - dragon.x
+        val dz = targetPos.z - dragon.z
+        val targetYaw = (atan2(dx, dz) * (180.0 / Math.PI)).toFloat()
+        dragon.yRot = Mth.approachDegrees(dragon.yRot, targetYaw, 9.0f)
+    }
+
+    private fun spawnMouthBreathParticles() {
+        val mouth = //if (target != null) {
+            //val facing = target!!.position().subtract(dragon.position()).normalize()
+            //val mouthOffset = facing.multiply(1.0, 0.0, 1.0).normalize().scale(6.5)
+          //  dragon.position().add(mouthOffset).subtract(0.0, 0.5, 0.0)
+        //} else {
+            Vec3(dragon.head.x, dragon.head.getY(0.5), dragon.head.z)
+        //}
+
+        val radius = 0.7
+
+        repeat(20) {
+            val theta = random * Math.PI * 2
+            val phi = acos(2.0 * random - 1.0)
+            val r = radius * cbrt(random)
+            val x = r * sin(phi) * cos(theta)
+            val y = r * sin(phi) * sin(theta)
+            val z = r * cos(phi)
+
+            level.sendParticles(
+                PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F),
+                true, true,
+                mouth.x + x, mouth.y + y, mouth.z + z,
+                1, 0.0, 0.0, 0.0, 0.0
+            )
+        }
     }
 
     private fun shootFireballAt(targetPos: Vec3) {
