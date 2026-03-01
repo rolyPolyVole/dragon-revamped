@@ -17,7 +17,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
     private val level = dragon.level() as ServerLevel
 
     private var ticks = 0
-    private var ticksUntilCrystalRespawn = 450
+    private var ticksUntilCrystalRespawn = 500
 
     fun tick () {
         this.ticks++
@@ -26,7 +26,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
             this.ticksUntilCrystalRespawn--
         } else {
             respawnCrystal()
-            this.ticksUntilCrystalRespawn = (200..300).random() + (getTotalCrystals() * 20)
+            this.ticksUntilCrystalRespawn = (400..500).random() + (getTotalCrystals() * 40)
         }
     }
 
