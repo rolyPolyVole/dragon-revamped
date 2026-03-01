@@ -25,6 +25,18 @@ class ExplosiveDragonFireball(level: Level, owner: LivingEntity, direction: Vec3
 
     override fun shouldBeSaved(): Boolean = false
 
+    override fun tick() {
+        super.tick()
+
+        val serverLevel = level() as? ServerLevel ?: return
+        serverLevel.sendParticles(
+            PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F),
+            true, true,
+            x, y + 0.5, z,
+            3, 0.1, 0.1, 0.1, 0.0
+        )
+    }
+
     override fun onHit(hitResult: HitResult) {
         if (hitResult.type == HitResult.Type.ENTITY && hitResult is EntityHitResult) {
             if (ownedBy(hitResult.entity)) return
