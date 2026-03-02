@@ -55,6 +55,7 @@ class EnragedChargeAttack(dragon: EnderDragon) : AbstractDragonAttack(dragon) {
 
         this.currentCharge = charge
         this.chargesRemaining--
+        this.roarTicks = 0
         return true
     }
 
