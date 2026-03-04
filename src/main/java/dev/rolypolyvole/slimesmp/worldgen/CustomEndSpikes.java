@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.SpikeFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.SpikeConfiguration;
 import net.minecraft.world.phys.Vec3;
@@ -29,7 +28,6 @@ public final class CustomEndSpikes {
 
     private static final Logger LOGGER = LoggerFactory.getLogger("slime-smp-mod");
 
-    private static final int START_DEPTH = 12;
     private static final float MAX_LEAN_PER_Y = 0.35f;
     private static final float TAPER_EXPONENT = 0.97f;
     private static final int TIP_STRUCTURE_HEIGHT = 6;
@@ -96,13 +94,8 @@ public final class CustomEndSpikes {
         float leanX = lean[0];
         float leanZ = lean[1];
 
-        int estimatedBodyHeight = Math.max(1, tipBaseY - 50);
-        int baseCenterX = tipX - Math.round(estimatedBodyHeight * leanX);
-        int baseCenterZ = tipZ - Math.round(estimatedBodyHeight * leanZ);
-        int highestSurface = findHighestSurface(level, baseCenterX, baseCenterZ, 10);
-        int startY = (highestSurface == level.getMinY())
-                ? Math.max(level.getMinY(), crystalBlockY - TIP_STRUCTURE_HEIGHT - 80)
-                : Math.max(level.getMinY(), highestSurface - START_DEPTH);
+        // Deterministic startY — no terrain scanning, so spikes are identical on respawn
+        int startY = Math.max(level.getMinY(), crystalBlockY - TIP_STRUCTURE_HEIGHT - 80);
 
         int bodyHeight = Math.max(1, tipBaseY - startY);
         int baseRadius = Mth.clamp(bodyHeight / 10 + 2, 4, 9);
@@ -285,7 +278,7 @@ public final class CustomEndSpikes {
         crystal.setBeamTarget(null);
         crystal.setInvulnerable(false);
         crystal.setShowBottom(false);
-        crystal.snapTo(x + 0.5, crystalBlockY + 0.1, z + 0.5, sr.nextFloat() * 360.0F, 0.0F);
+        crystal.snapTo(x + 0.5, crystalBlockY, z + 0.5, sr.nextFloat() * 360.0F, 0.0F);
         level.addFreshEntity(crystal);
 
         CRYSTAL_LOCATIONS.add(crystal.position());
@@ -317,27 +310,6 @@ public final class CustomEndSpikes {
         leanZ +=  nx * wobble;
 
         return new float[]{leanX, leanZ};
-    }
-
-    private static int findHighestSurface(ServerLevelAccessor level, int centerX, int centerZ, int searchRadius) {
-        int highest = level.getMinY();
-        MutableBlockPos pos = new MutableBlockPos();
-
-        for (int x = centerX - searchRadius; x <= centerX + searchRadius; x++) {
-            for (int z = centerZ - searchRadius; z <= centerZ + searchRadius; z++) {
-                int y = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, x, z);
-                while (y > highest) {
-                    pos.set(x, y, z);
-                    if (level.getBlockState(pos).is(Blocks.END_STONE)) {
-                        highest = y;
-                        break;
-                    }
-                    y--;
-                }
-            }
-        }
-
-        return highest;
     }
 
     private static BlockState pickSpikeBlock(RandomSource sr, int y, int topY) {
