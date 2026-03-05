@@ -47,7 +47,7 @@ public final class CustomEndSpikes {
         for (SpikeFeature.EndSpike spike : SpikeFeature.getSpikesForLevel(level)) {
             CRYSTAL_LOCATIONS.add(new Vec3(
                     spike.getCenterX() + 0.5,
-                    spike.getHeight() + 0.1,
+                    spike.getHeight(),
                     spike.getCenterZ() + 0.5
             ));
         }
