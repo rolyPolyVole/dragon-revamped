@@ -3,7 +3,10 @@ package dev.rolypolyvole.slimesmp.mixin;
 import dev.rolypolyvole.slimesmp.data.DragonDamageTypes;
 import dev.rolypolyvole.slimesmp.dragon.DragonAbilityManager;
 import dev.rolypolyvole.slimesmp.dragon.DragonAttackManager;
+import dev.rolypolyvole.slimesmp.util.ExplosionAnimation;
+import kotlin.Pair;
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
@@ -20,22 +23,18 @@ import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhaseManage
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
+import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
@@ -225,6 +224,18 @@ abstract class EnderDragonMixin extends Mob implements Enemy {
     @ModifyConstant(method = "aiStep()V", constant = @Constant(floatValue = 0.06F))
     private float forwardMovement(float original) {
         return original * 1.7F * attackManager.getSpeedMultiplier();
+    }
+
+    @Redirect(method = "checkWalls", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;removeBlock(Lnet/minecraft/core/BlockPos;Z)Z"))
+    private boolean breakBlockWithAnimation(ServerLevel level, BlockPos pos, boolean flags) {
+        BlockState state = level.getBlockState(pos);
+        boolean result = level.removeBlock(pos, flags);
+
+        if (result) {
+            ExplosionAnimation.INSTANCE.play(level, List.of(new Pair<>(pos.immutable(), state)), 0.4);
+        }
+
+        return result;
     }
 
     @ModifyConstant(method = "checkCrystals()V", constant = @Constant(doubleValue = 32.0))
