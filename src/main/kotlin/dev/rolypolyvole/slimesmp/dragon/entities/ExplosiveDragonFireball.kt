@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.core.particles.PowerParticleOption
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.tags.BlockTags
 import net.minecraft.util.Mth
 import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.effect.MobEffects
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.AreaEffectCloud
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.projectile.hurtingprojectile.DragonFireball
 import net.minecraft.world.level.Level
+import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.EntityHitResult
 import net.minecraft.world.phys.HitResult
 import net.minecraft.world.phys.Vec3
@@ -56,15 +58,14 @@ class ExplosiveDragonFireball(level: Level, owner: LivingEntity, direction: Vec3
     }
 
     private fun createExplosion(level: ServerLevel, pos: Vec3) {
-        val radius = 2.5F
-        val blocks = captureBlocks(level, pos, radius)
+        val blocks = captureBlocks(level, pos)
 
         level.explode(
             this,
             damageSources().explosion(this, dragon),
             null,
             pos.x, pos.y, pos.z,
-            radius,
+            2.5F,
             false,
             Level.ExplosionInteraction.MOB
         )
@@ -72,20 +73,21 @@ class ExplosiveDragonFireball(level: Level, owner: LivingEntity, direction: Vec3
         ExplosionAnimation.play(level, blocks, 0.6)
     }
 
-    private fun captureBlocks(level: ServerLevel, center: Vec3, radius: Float): List<Pair<BlockPos, net.minecraft.world.level.block.state.BlockState>> {
-        val r = Mth.ceil(radius.toDouble())
-        val blocks = mutableListOf<Pair<BlockPos, net.minecraft.world.level.block.state.BlockState>>()
-        val cx = Mth.floor(center.x)
-        val cy = Mth.floor(center.y)
-        val cz = Mth.floor(center.z)
+    private fun captureBlocks(level: ServerLevel, center: Vec3): List<Pair<BlockPos, BlockState>> {
+        val blocks = mutableListOf<Pair<BlockPos, BlockState>>()
+        val radius = 2
+        val centerX = Mth.floor(center.x)
+        val centerY = Mth.floor(center.y)
+        val centerZ = Mth.floor(center.z)
 
-        for (x in -r..r) {
-            for (y in -r..r) {
-                for (z in -r..r) {
-                    val bp = BlockPos(cx + x, cy + y, cz + z)
-                    val state = level.getBlockState(bp)
-                    if (!state.isAir) {
-                        blocks.add(bp to state)
+        for (x in -radius..radius) {
+            for (y in -radius..radius) {
+                for (z in -radius..radius) {
+                    val pos = BlockPos(centerX + x, centerY + y, centerZ + z)
+                    val state = level.getBlockState(pos)
+
+                    if (!state.isAir && (!state.`is`(BlockTags.DRAGON_TRANSPARENT))) {
+                        blocks.add(pos to state)
                     }
                 }
             }
