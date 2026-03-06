@@ -186,7 +186,7 @@ abstract class EnderDragonMixin extends Mob implements Enemy {
         float max = dragon.getMaxHealth();
         if (max <= 0.0F) return original;
 
-        float threshold = Math.min(0.10F * max, 100.0F);
+        float threshold = Math.min(0.15F * max, 100.0F);
         return threshold / max;
     }
 
