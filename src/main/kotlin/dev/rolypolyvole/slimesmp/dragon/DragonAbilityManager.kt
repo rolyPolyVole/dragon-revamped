@@ -23,7 +23,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
 
     private var ticks = 0
     private var ticksUntilCrystalRespawn = 500
-    private var ticksUntilHunterSpawn = (100..200).random()
+    private var ticksUntilHunterSpawn = (1200..2000).random()
 
     fun tick () {
         this.ticks++
@@ -46,7 +46,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
             spawnCrystalHunter()
 
             val playerCount = nearbyPlayers().size.coerceAtLeast(1)
-            this.ticksUntilHunterSpawn = (1200..2000).random() + (400 / sqrt(playerCount.toDouble())).toInt()
+            this.ticksUntilHunterSpawn = (1200..2000).random() + (1200 / sqrt(playerCount.toDouble())).toInt()
         }
     }
 
