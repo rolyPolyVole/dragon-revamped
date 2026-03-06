@@ -8,7 +8,7 @@ class DragonAttackManager(private val dragon: EnderDragon) {
         List(12) { ChargeAttack.ChargeAttackType },
         List(5) { FireballAttack.FireballAttackType },
         List(4) { LightningAttack.LightningAttackType },
-        List(3) { EnragedChargeAttack.EnragedChargeAttackType }
+        List(2) { EnragedChargeAttack.EnragedChargeAttackType }
     ).flatten()
 
     private var currentAttack: AbstractDragonAttack? = null
