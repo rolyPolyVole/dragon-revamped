@@ -9,7 +9,7 @@ import net.minecraft.world.phys.Vec3
 object ExplosionAnimation {
 
     fun play(level: ServerLevel, blocks: List<Pair<BlockPos, BlockState>>, scalar: Double) {
-        val solid = blocks.filter { (_, state) -> !state.isAir && state.isSolid }
+        val solid = blocks.filter { (_, state) -> !state.isAir }
         val selected = solid.shuffled().take(15)
 
         for ((pos, state) in selected) {
