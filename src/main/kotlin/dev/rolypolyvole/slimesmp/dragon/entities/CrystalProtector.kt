@@ -218,7 +218,9 @@ class CrystalProtector(level: Level) : DragonSkeleton(level) {
             it.isInvulnerable = false
             it.hurtServer(level() as ServerLevel, this.damageSources().mobAttack(this), 1.0F)
         }
-        orbitCrystal = null
+
+        this.orbitCrystal = null
+
         super.die(damageSource)
     }
 
