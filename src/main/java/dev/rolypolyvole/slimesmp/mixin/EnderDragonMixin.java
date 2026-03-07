@@ -268,6 +268,9 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
 
     @Inject(method = "onCrystalDestroyed", at = @At("TAIL"))
     private void onCrystalDestroyed(ServerLevel serverLevel, EndCrystal endCrystal, BlockPos blockPos, DamageSource damageSource, CallbackInfo ci) {
-        if (abilityManager != null) abilityManager.sendCrystalCount();
+        if (abilityManager != null) {
+            abilityManager.onCrystalDestroyed(blockPos);
+            abilityManager.sendCrystalCount();
+        }
     }
 }

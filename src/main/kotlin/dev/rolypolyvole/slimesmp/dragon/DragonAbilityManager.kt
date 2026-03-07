@@ -83,8 +83,6 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
             .filterNot(::doesCrystalExist)
             .randomOrNull() ?: return
 
-        crystalLocations[pos] = 600
-
         val crystal = EntityType.END_CRYSTAL.create(level, EntitySpawnReason.EVENT) ?: return
 
         crystal.setPos(pos)
@@ -96,6 +94,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
         nearbyPlayers().forEach {
             it.sendSystemMessage(Component.literal("An End Crystal has respawned!").withColor(0xFF55FF))
         }
+
         sendCrystalCount()
     }
 
@@ -127,6 +126,8 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
         nearbyPlayers().forEach {
             it.sendSystemMessage(Component.literal("A Crystal Protector joins the battle!").withColor(0xAA00AA))
         }
+
+        sendCrystalCount()
     }
 
     private fun doesCrystalExist(vec: Vec3): Boolean {
@@ -135,8 +136,19 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
         return !level.getEntitiesOfClass(EndCrystal::class.java, aabb).isEmpty()
     }
 
+    private fun getAliveProtectors(): Int {
+        val center = dragon.fightOrigin.center
+        val aabb = AABB.ofSize(center, 400.0, 400.0, 400.0)
+        return level.getEntitiesOfClass(CrystalProtector::class.java, aabb).size
+    }
+
     private fun getTotalCrystals(): Int {
-        return crystalLocations.keys.filter(::doesCrystalExist).size
+        return crystalLocations.keys.filter(::doesCrystalExist).size + getAliveProtectors()
+    }
+
+    fun onCrystalDestroyed(pos: BlockPos) {
+        val key = crystalLocations.keys.minByOrNull { it.distanceToSqr(pos.center) } ?: return
+        crystalLocations[key] = 600
     }
 
     fun sendCrystalCount() {
