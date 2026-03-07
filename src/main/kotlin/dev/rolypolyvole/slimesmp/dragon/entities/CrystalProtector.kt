@@ -36,7 +36,8 @@ class CrystalProtector(level: Level) : DragonSkeleton(level) {
         getAttribute(Attributes.MAX_HEALTH)?.baseValue = 40.0
         getAttribute(Attributes.STEP_HEIGHT)?.baseValue = 3.0
         getAttribute(Attributes.FOLLOW_RANGE)?.baseValue = 96.0
-        getAttribute(Attributes.SCALE)?.baseValue = 1.1
+        getAttribute(Attributes.SCALE)?.baseValue = 1.2
+        getAttribute(Attributes.MOVEMENT_SPEED)!!.baseValue = 0.32
 
         this.health = maxHealth
 
@@ -143,7 +144,7 @@ class CrystalProtector(level: Level) : DragonSkeleton(level) {
 
         val desired = when {
             distSqr < 2.0 * 2.0 -> Items.NETHERITE_SWORD
-            distSqr < 35.0 * 35.0 -> Items.NETHERITE_SPEAR
+            distSqr < 30.0 * 30.0 -> Items.NETHERITE_SPEAR
             else -> Items.BOW
         }
 
@@ -210,7 +211,7 @@ class CrystalProtector(level: Level) : DragonSkeleton(level) {
             getAttribute(Attributes.STEP_HEIGHT)?.baseValue = 3.0
             getAttribute(Attributes.MAX_HEALTH)?.baseValue = 70.0
             getAttribute(Attributes.KNOCKBACK_RESISTANCE)?.baseValue = 0.9
-            getAttribute(Attributes.SCALE)?.baseValue = 1.1
+            getAttribute(Attributes.SCALE)?.baseValue = 1.2
 
             health = maxHealth
 
