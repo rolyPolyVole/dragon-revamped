@@ -3,6 +3,7 @@ package dev.rolypolyvole.slimesmp.dragon
 import dev.rolypolyvole.slimesmp.dragon.entities.CrystalProtector
 import dev.rolypolyvole.slimesmp.util.highestBlockY
 import dev.rolypolyvole.slimesmp.worldgen.CustomEndSpikes
+import net.minecraft.ChatFormatting
 import net.minecraft.core.BlockPos
 import net.minecraft.core.particles.ParticleTypes
 import net.minecraft.network.chat.Component
@@ -95,6 +96,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
         nearbyPlayers().forEach {
             it.sendSystemMessage(Component.literal("An End Crystal has respawned!").withColor(0xFF55FF))
         }
+        sendCrystalCount()
     }
 
     private fun spawnCrystalHunter() {
@@ -135,5 +137,12 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
 
     private fun getTotalCrystals(): Int {
         return crystalLocations.keys.filter(::doesCrystalExist).size
+    }
+
+    fun sendCrystalCount() {
+        val count = getTotalCrystals()
+        val message = Component.literal("✦ Crystals Remaining: $count").withStyle(ChatFormatting.DARK_PURPLE)
+
+        nearbyPlayers().forEach { it.sendSystemMessage(message, true) }
     }
 }

@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.boss.enderdragon.EndCrystal;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.entity.boss.enderdragon.phases.DragonPhaseInstance;
@@ -263,5 +264,10 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
     @ModifyConstant(method = "onCrystalDestroyed", constant = @Constant(floatValue = 10.0F))
     private float increaseCrystalDamage(float original) {
         return 25.0F;
+    }
+
+    @Inject(method = "onCrystalDestroyed", at = @At("TAIL"))
+    private void onCrystalDestroyed(ServerLevel serverLevel, EndCrystal endCrystal, BlockPos blockPos, DamageSource damageSource, CallbackInfo ci) {
+        if (abilityManager != null) abilityManager.sendCrystalCount();
     }
 }
