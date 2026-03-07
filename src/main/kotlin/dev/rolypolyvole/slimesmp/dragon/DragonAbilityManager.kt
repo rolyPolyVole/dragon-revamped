@@ -104,9 +104,10 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
         val spawnZ = dragon.fightOrigin.z + offsetZ
         val groundY = BlockPos(spawnX.toInt(), 0, spawnZ.toInt()).highestBlockY(level).y.toDouble()
 
-        val protector = CrystalProtector(level)
-        protector.setPos(spawnX, groundY, spawnZ)
-        protector.spawnWithMount(level)
+        CrystalProtector(level).let {
+            it.setPos(spawnX, groundY, spawnZ)
+            it.spawnWithMount(level)
+        }
 
         EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.MOB_SUMMONED)?.let {
             it.snapTo(spawnX, groundY, spawnZ, 0f, 0f)

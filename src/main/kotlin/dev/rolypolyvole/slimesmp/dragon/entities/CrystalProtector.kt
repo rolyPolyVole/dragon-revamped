@@ -67,6 +67,7 @@ class CrystalProtector(level: Level) : DragonSkeleton(level) {
             isInvulnerable = true
             setPos(this@CrystalProtector.position())
         }
+
         serverLevel.addFreshEntity(crystal)
         this.orbitCrystal = crystal
 
