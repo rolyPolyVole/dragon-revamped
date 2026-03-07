@@ -51,6 +51,8 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
 
     @Final @Shadow
     public EnderDragonPart head;
+    @Final @Shadow
+    private EnderDragonPart neck;
     @Unique
     private EnderDragonPart hitPart;
     @Unique
@@ -183,7 +185,7 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
     private void customDamage(EnderDragon dragon, ServerLevel serverLevel, DamageSource source, float f) {
         float adjusted = phaseManager.getCurrentPhase().onHurt(source, damageReceived);
 
-        float finalDamage = (hitPart == head)
+        float finalDamage = (hitPart == head || hitPart == neck)
             ? adjusted * 2.0F
             : adjusted;
 
