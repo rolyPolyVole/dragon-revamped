@@ -3,6 +3,7 @@ package dev.rolypolyvole.slimesmp.mixin;
 import net.minecraft.world.level.levelgen.feature.SpikeFeature;
 import org.joml.Vector2d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -14,7 +15,9 @@ import java.util.Random;
 @Mixin(targets = "net.minecraft.world.level.levelgen.feature.SpikeFeature$SpikeCacheLoader")
 public abstract class SpikeCacheLoaderMixin {
 
+    @Unique
     private static final int CRYSTAL_Y = 110;
+    @Unique
     private static final int POSITION_OFFSET = 50;
 
     @Inject(method = "load(Ljava/lang/Long;)Ljava/util/List;", at = @At("RETURN"), cancellable = true)

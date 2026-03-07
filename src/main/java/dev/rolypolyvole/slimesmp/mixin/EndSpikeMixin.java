@@ -1,4 +1,3 @@
-// src/main/java/dev/rolypolyvole/slimesmp/mixin/SpikeFeatureMixin.java
 package dev.rolypolyvole.slimesmp.mixin;
 
 import com.mojang.serialization.Codec;
@@ -14,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SpikeFeature.class)
-abstract class EndSpikeMixin extends Feature<SpikeConfiguration> {
+public abstract class EndSpikeMixin extends Feature<SpikeConfiguration> {
 
     public EndSpikeMixin(Codec<SpikeConfiguration> codec) {
         super(codec);

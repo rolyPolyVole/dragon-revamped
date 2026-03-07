@@ -10,8 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EndDragonFight.class)
-@SuppressWarnings("unused")
-abstract class EndDragonFightMixin {
+public abstract class EndDragonFightMixin {
     @Shadow @Final
     private ServerBossEvent dragonEvent;
 

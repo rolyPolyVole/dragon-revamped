@@ -37,8 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(EnderDragon.class)
-@SuppressWarnings("unused")
-abstract class EnderDragonMixin extends Mob implements Enemy {
+public abstract class EnderDragonMixin extends Mob implements Enemy {
     @Final @Shadow
     private EnderDragonPhaseManager phaseManager;
     @Final @Shadow

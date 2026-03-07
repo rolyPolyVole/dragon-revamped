@@ -14,8 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EnderMan.class)
-@SuppressWarnings("unused")
-abstract class EnderManMixin extends Monster {
+public abstract class EnderManMixin extends Monster {
 
     protected EnderManMixin(EntityType<? extends Monster> entityType, Level level) {
         super(entityType, level);

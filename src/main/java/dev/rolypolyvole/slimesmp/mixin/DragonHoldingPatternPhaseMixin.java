@@ -8,7 +8,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(DragonHoldingPatternPhase.class)
-abstract class DragonHoldingPatternPhaseMixin extends AbstractDragonPhaseInstance {
+public abstract class DragonHoldingPatternPhaseMixin extends AbstractDragonPhaseInstance {
+
     protected DragonHoldingPatternPhaseMixin(EnderDragon enderDragon) {
         super(enderDragon);
     }
