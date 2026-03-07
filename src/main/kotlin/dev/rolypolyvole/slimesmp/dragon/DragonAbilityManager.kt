@@ -34,7 +34,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
         val playerCount = nearbyPlayers().size.coerceAtLeast(1)
         val crystals = getTotalCrystals()
 
-        val min = 500
+        val min = 400
         val scaled = (750 / sqrt(playerCount.toDouble())).toInt()
         val extra = crystals * 150
 
