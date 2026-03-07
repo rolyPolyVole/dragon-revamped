@@ -1,5 +1,6 @@
 package dev.rolypolyvole.slimesmp.mixin;
 
+import dev.rolypolyvole.slimesmp.dragon.entities.CrystalProtector;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -49,6 +50,9 @@ public abstract class AreaEffectCloudMixin extends Entity {
         List<T> filtered = new ArrayList<>();
 
         for (T entity : entities) {
+            if (entity instanceof CrystalProtector.CrystalProtectorHorse) continue;
+            if (entity instanceof CrystalProtector) continue;
+
             if (entity instanceof EnderMan enderMan) {
                 double dx = enderMan.getX() - this.getX();
                 double dz = enderMan.getZ() - this.getZ();
