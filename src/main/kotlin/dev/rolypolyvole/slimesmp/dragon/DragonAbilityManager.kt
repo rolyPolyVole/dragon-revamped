@@ -22,31 +22,52 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
     private val level = dragon.level() as ServerLevel
 
     private var ticks = 0
-    private var ticksUntilCrystalRespawn = 500
-    private var ticksUntilHunterSpawn = (1200..2000).random()
+    private var ticksUntilCrystalRespawn = crystalRespawnTime()
+    private var ticksUntilHunterSpawn = hunterRespawnTime()
+
+    private val crystalLocations = CustomEndSpikes.getCrystalLocations(level)
+        .associateWith { 0 }
+        .toMutableMap()
+
+    private fun crystalRespawnTime(): Int {
+        val playerCount = nearbyPlayers().size.coerceAtLeast(1)
+        val crystals = getTotalCrystals()
+
+        val min = 500
+        val scaled = (750 / sqrt(playerCount.toDouble())).toInt()
+        val extra = crystals * 150
+
+        return min + scaled + extra
+    }
+
+    private fun hunterRespawnTime(): Int {
+        val playerCount = nearbyPlayers().size.coerceAtLeast(1)
+
+        val base = (1200..1500).random()
+        val scaled = (1200 / sqrt(playerCount.toDouble())).toInt()
+
+        return base + scaled
+    }
 
     fun tick () {
         this.ticks++
 
-        if (dragon.isDeadOrDying) return
+        crystalLocations.replaceAll { _, value ->
+            (value - 1).coerceAtLeast(0)
+        }
 
         if (ticksUntilCrystalRespawn > 0) {
             this.ticksUntilCrystalRespawn--
         } else {
             respawnCrystal()
-
-            val playerCount = nearbyPlayers().size.coerceAtLeast(1)
-            val base = 400 + ((300..400).random() / sqrt(playerCount.toDouble())).toInt()
-            this.ticksUntilCrystalRespawn = base + (getTotalCrystals() * 40)
+            this.ticksUntilCrystalRespawn = crystalRespawnTime()
         }
 
         if (ticksUntilHunterSpawn > 0) {
             this.ticksUntilHunterSpawn--
         } else {
             spawnCrystalHunter()
-
-            val playerCount = nearbyPlayers().size.coerceAtLeast(1)
-            this.ticksUntilHunterSpawn = (1200..2000).random() + (1200 / sqrt(playerCount.toDouble())).toInt()
+            this.ticksUntilHunterSpawn = hunterRespawnTime()
         }
     }
 
@@ -56,9 +77,12 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
     }
 
     private fun respawnCrystal() {
-        val pos = CustomEndSpikes.getCrystalLocations(level)
+        val pos = crystalLocations
+            .filter { it.value == 0 }.keys
             .filterNot(::doesCrystalExist)
             .randomOrNull() ?: return
+
+        crystalLocations[pos] = 600
 
         val crystal = EntityType.END_CRYSTAL.create(level, EntitySpawnReason.EVENT) ?: return
 
@@ -98,7 +122,7 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
         )
 
         nearbyPlayers().forEach {
-            it.sendSystemMessage(Component.literal("A Crystal Protector has appeared!").withColor(0xAA00AA))
+            it.sendSystemMessage(Component.literal("A Crystal Protector joins the battle!").withColor(0xAA00AA))
         }
     }
 
@@ -109,6 +133,6 @@ class DragonAbilityManager(private val dragon: EnderDragon) {
     }
 
     private fun getTotalCrystals(): Int {
-        return CustomEndSpikes.getCrystalLocations(level).filter(::doesCrystalExist).size
+        return crystalLocations.keys.filter(::doesCrystalExist).size
     }
 }
