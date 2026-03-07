@@ -218,7 +218,7 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
     private float customCrystalHeal(float original) {
         int ticksSinceLastHurt = tickCount - getLastHurtByMobTimestamp();
         double playerCount = Math.max(nearbyPlayerCount(), 1);
-        int threshold = (int) (100 + 150 / Math.sqrt(playerCount));
+        int threshold = (int) (300 + 200 / Math.sqrt(playerCount));
 
         return ticksSinceLastHurt > threshold ? 8.0F : 1.2F;
     }
