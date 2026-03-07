@@ -1,5 +1,6 @@
 package dev.rolypolyvole.slimesmp.mixin;
 
+import dev.rolypolyvole.slimesmp.dragon.entities.DragonSkeleton;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,7 +27,9 @@ public abstract class EnderManMixin extends Monster {
             ci.cancel();
         }
 
-        if (!((ServerLevel) level()).getDragons().isEmpty() && target instanceof Endermite) {
+        if (((ServerLevel) level()).getDragons().isEmpty()) return;
+
+        if (target instanceof Endermite || target instanceof DragonSkeleton) {
             ci.cancel();
         }
     }
