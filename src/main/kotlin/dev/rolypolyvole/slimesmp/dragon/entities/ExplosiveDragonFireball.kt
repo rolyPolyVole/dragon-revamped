@@ -86,7 +86,7 @@ class ExplosiveDragonFireball(level: Level, owner: LivingEntity, direction: Vec3
                     val pos = BlockPos(centerX + x, centerY + y, centerZ + z)
                     val state = level.getBlockState(pos)
 
-                    if (!state.isAir && (!state.`is`(BlockTags.DRAGON_TRANSPARENT))) {
+                    if (!state.isAir && (!state.`is`(BlockTags.DRAGON_IMMUNE))) {
                         blocks.add(pos to state)
                     }
                 }
