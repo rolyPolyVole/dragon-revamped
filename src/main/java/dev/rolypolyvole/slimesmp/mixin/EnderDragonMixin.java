@@ -189,7 +189,7 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
         this.reallyHurt(serverLevel, source, finalDamage);
 
         if (source.getEntity() instanceof ServerPlayer player) {
-            int health = Math.round(this.getHealth());
+            int health = this.getHealth() <= 1.0F ? 0 : Math.round(this.getHealth());
             Component message = Component.literal("❤ Dragon Health: " + health).withStyle(ChatFormatting.RED);
 
             player.sendSystemMessage(message, true);
