@@ -10,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -185,6 +186,10 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
         float finalDamage = (hitPart == head)
             ? adjusted * 2.0F
             : adjusted;
+
+        if (source.is(DamageTypeTags.IS_EXPLOSION) && phaseManager.getCurrentPhase().getPhase() == EnderDragonPhase.LANDING) {
+            finalDamage *= 0.1F;
+        }
 
         this.reallyHurt(serverLevel, source, finalDamage);
 
