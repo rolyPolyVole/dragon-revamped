@@ -1,6 +1,7 @@
 package dev.rolypolyvole.slimesmp.mixin;
 
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.level.dimension.end.EndDragonFight;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,7 +16,8 @@ public abstract class EndDragonFightMixin {
     private ServerBossEvent dragonEvent;
 
     @Inject(method = "<init>*", at = @At("RETURN"))
-    private void removeFog(CallbackInfo ci) {
+    private void customizeBossBar(CallbackInfo ci) {
         this.dragonEvent.setCreateWorldFog(false);
+        this.dragonEvent.setOverlay(BossEvent.BossBarOverlay.NOTCHED_6);
     }
 }
