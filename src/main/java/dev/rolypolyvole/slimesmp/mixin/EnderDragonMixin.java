@@ -31,7 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -50,9 +49,6 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
 
     @Shadow
     protected abstract void reallyHurt(ServerLevel serverLevel, DamageSource damageSource, float f);
-
-    @Shadow @Nullable
-    public EndCrystal nearestCrystal;
 
     @Final @Shadow
     private EnderDragonPart body;
@@ -73,6 +69,8 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
     private DragonAttackManager attackManager;
     @Unique
     private DragonAbilityManager abilityManager;
+    @Unique
+    private boolean firstTick = true;
 
     @Unique
     private long lastPlayerCount = -1;
@@ -117,6 +115,11 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
     @Inject(method = "aiStep()V", at = @At("TAIL"))
     private void tick(CallbackInfo info) {
         if (getHealth() <= 1.0F) return;
+
+        if (firstTick) {
+            this.firstTick = false;
+            phaseManager.setPhase(EnderDragonPhase.HOLDING_PATTERN);
+        }
 
         if (abilityManager != null) abilityManager.tick();
         if (attackManager != null && !abilityManager.getRageAbility().isActive()) attackManager.tick();
