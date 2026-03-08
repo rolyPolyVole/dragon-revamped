@@ -191,7 +191,7 @@ class DragonRageAbility(
                 1.0 - this.level.random.nextDouble() * 2.0
             ).normalize()
 
-            val speed = 1.5 + this.level.random.nextDouble() * 1.5
+            val speed = 1.0 + this.level.random.nextDouble() * 1.5
 
             falling.deltaMovement = direction
                 .scale(speed)
