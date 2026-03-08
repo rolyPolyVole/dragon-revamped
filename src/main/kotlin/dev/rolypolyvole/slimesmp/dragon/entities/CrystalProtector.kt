@@ -39,7 +39,7 @@ class CrystalProtector(level: Level) : DragonSkeleton(level) {
     init {
         getAttribute(Attributes.MAX_HEALTH)?.baseValue = 40.0
         getAttribute(Attributes.STEP_HEIGHT)?.baseValue = 3.0
-        getAttribute(Attributes.FOLLOW_RANGE)?.baseValue = 96.0
+        getAttribute(Attributes.FOLLOW_RANGE)?.baseValue = 196.0
         getAttribute(Attributes.SCALE)?.baseValue = 1.2
         getAttribute(Attributes.MOVEMENT_SPEED)?.baseValue = 0.32
         getAttribute(Attributes.SAFE_FALL_DISTANCE)?.baseValue = 100.0
