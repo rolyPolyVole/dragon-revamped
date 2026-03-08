@@ -231,7 +231,11 @@ class CrystalProtector(level: Level) : DragonSkeleton(level) {
 
     override fun remove(reason: RemovalReason) {
         orbitCrystal?.discard()
-        orbitCrystal = null
+        this.orbitCrystal = null
+
+        horse?.discard()
+        this.horse = null
+
         super.remove(reason)
     }
 
@@ -242,6 +246,8 @@ class CrystalProtector(level: Level) : DragonSkeleton(level) {
         }
 
         this.orbitCrystal = null
+        this.horse?.discard()
+        this.horse = null
 
         super.die(damageSource)
     }

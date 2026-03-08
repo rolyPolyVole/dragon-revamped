@@ -3,6 +3,7 @@ package dev.rolypolyvole.slimesmp.mixin;
 import dev.rolypolyvole.slimesmp.data.DragonDamageTypes;
 import dev.rolypolyvole.slimesmp.dragon.DragonAbilityManager;
 import dev.rolypolyvole.slimesmp.dragon.DragonAttackManager;
+import dev.rolypolyvole.slimesmp.dragon.entities.CrystalProtector;
 import dev.rolypolyvole.slimesmp.util.ExplosionAnimation;
 import kotlin.Pair;
 import net.minecraft.ChatFormatting;
@@ -23,10 +24,12 @@ import net.minecraft.world.entity.boss.enderdragon.EnderDragonPart;
 import net.minecraft.world.entity.boss.enderdragon.phases.DragonPhaseInstance;
 import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhase;
 import net.minecraft.world.entity.boss.enderdragon.phases.EnderDragonPhaseManager;
+import net.minecraft.world.entity.monster.Endermite;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 import org.objectweb.asm.Opcodes;
@@ -57,6 +60,9 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
     public EnderDragonPart head;
     @Final @Shadow
     private EnderDragonPart neck;
+
+    @Shadow
+    public int dragonDeathTime;
 
     @Unique
     private EnderDragonPart hitPart;
@@ -286,6 +292,24 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
     @ModifyConstant(method = "onCrystalDestroyed", constant = @Constant(floatValue = 10.0F))
     private float increaseCrystalDamage(float original) {
         return 25.0F;
+    }
+
+    @Inject(method = "tickDeath", at = @At("HEAD"))
+    private void onDeath(CallbackInfo ci) {
+        if (!(level() instanceof ServerLevel serverLevel)) return;
+
+        if (dragonDeathTime != 0) return;
+
+        Vec3 center = self().getFightOrigin().getCenter();
+        AABB area = AABB.ofSize(center, 400.0, 400.0, 400.0);
+
+        for (CrystalProtector protector : serverLevel.getEntitiesOfClass(CrystalProtector.class, area)) {
+            protector.remove(RemovalReason.DISCARDED);
+        }
+
+        for (Endermite endermite : serverLevel.getEntitiesOfClass(Endermite.class, area)) {
+            endermite.discard();
+        }
     }
 
     @Inject(method = "onCrystalDestroyed", at = @At("TAIL"))
