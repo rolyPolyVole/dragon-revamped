@@ -217,6 +217,10 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
             finalDamage *= 0.2F;
         }
 
+        if (finalDamage > getMaxHealth() * 0.25F) {
+            finalDamage = getMaxHealth() * 0.25F;
+        }
+
         this.reallyHurt(serverLevel, source, finalDamage);
 
         if (source.getEntity() instanceof ServerPlayer player) {
