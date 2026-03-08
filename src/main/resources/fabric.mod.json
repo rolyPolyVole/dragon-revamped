@@ -1,27 +1,23 @@
 {
     "schemaVersion": 1,
-    "id": "slime-smp-mod",
+    "id": "dragon-revamped",
     "version": "${version}",
-    "name": "SlimeSMPMod",
+    "name": "Dragon Revamped",
     "description": "",
     "authors": [],
     "contact": {},
     "license": "All-Rights-Reserved",
-    "icon": "assets/slime-smp-mod/icon.png",
+    "icon": "assets/dragon_revamped/icon.png",
     "environment": "server",
     "entrypoints": {
-        "fabric-datagen": [
-            "dev.rolypolyvole.slimesmp.client.SlimeSMPModDataGenerator"
-        ],
         "server": [
-            "dev.rolypolyvole.slimesmp.SlimeSMPMod"
+            "dev.rolypolyvole.dragonrevamped.DragonRevamped"
         ]
     },
     "mixins": [
-        "slime-smp-mod.mixins.json",
         {
-            "config": "slime-smp-mod.client.mixins.json",
-            "environment": "client"
+            "config": "dragon-revamped.mixins.json",
+            "environment": "server"
         }
     ],
     "depends": {

@@ -1,7 +1,7 @@
 {
     "replace": false,
     "values": [
-        "slime-smp-mod:dragon_body_hit",
-        "slime-smp-mod:dragon_lightning"
+        "dragon-revamped:dragon_body_hit",
+        "dragon-revamped:dragon_lightning"
     ]
 }
