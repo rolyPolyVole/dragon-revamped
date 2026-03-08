@@ -11,6 +11,7 @@ import net.minecraft.world.effect.MobEffectInstance
 import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.entity.AreaEffectCloud
 import net.minecraft.world.entity.LivingEntity
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon
 import net.minecraft.world.entity.projectile.hurtingprojectile.DragonFireball
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.state.BlockState
@@ -38,13 +39,13 @@ class ExplosiveDragonFireball(level: Level, owner: LivingEntity, direction: Vec3
             PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F),
             true, true,
             x, y + 0.5, z,
-            3, 0.1, 0.1, 0.1, 0.0
+            10, 0.1, 0.1, 0.1, 0.0
         )
     }
 
     override fun onHit(hitResult: HitResult) {
         if (hitResult.type == HitResult.Type.ENTITY && hitResult is EntityHitResult) {
-            if (ownedBy(hitResult.entity)) return
+            if (hitResult.entity is EnderDragon) return
             if (hitResult.entity.noPhysics) return
         }
 
