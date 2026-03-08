@@ -22,6 +22,7 @@ fun Vec3.xz(): Vec3 {
     return Vec3(x, 0.0, z)
 }
 
+@Suppress("DEPRECATION")
 fun Entity.standingBlockPos(): BlockPos {
     val pos = blockPosition()
     if (level().getBlockState(pos.below()).blocksMotion()) return pos
