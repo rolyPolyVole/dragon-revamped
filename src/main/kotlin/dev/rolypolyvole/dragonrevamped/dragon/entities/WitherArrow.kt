@@ -47,6 +47,8 @@ class WitherArrow(
     override fun doPostHurtEffects(target: LivingEntity) {
         super.doPostHurtEffects(target)
 
+        target.addEffect(MobEffectInstance(MobEffects.WITHER, 100, 1))
+
         if (Math.random() < 0.2) {
             target.addEffect(MobEffectInstance(MobEffects.DARKNESS, 85, 0))
         }
