@@ -3,6 +3,7 @@ package dev.rolypolyvole.dragonrevamped.worldgen;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.WorldGenRegion;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EntitySpawnReason;
@@ -37,7 +38,6 @@ public final class CustomEndSpikes {
     private static final int TIP_STRUCTURE_HEIGHT = 6;
 
     public static final Set<Vec3> CRYSTAL_LOCATIONS = new HashSet<>();
-    private static boolean needsRegeneration = false;
 
     /**
      * Returns cached crystal locations, computing from spike cache data if empty.
@@ -64,25 +64,22 @@ public final class CustomEndSpikes {
     // ── Spike placement ─────────────────────────────────────────────────
 
     public static void place(ServerLevelAccessor level, RandomSource ignored, SpikeConfiguration cfg, SpikeFeature.EndSpike spike) {
-        if (level instanceof net.minecraft.server.level.WorldGenRegion) {
-            // Initial feature generation — flag for deferred placement once chunks are loaded.
-            needsRegeneration = true;
+        if (level instanceof WorldGenRegion) {
             return;
         }
-        // Dragon respawn — ServerLevel, all chunks loaded, place directly.
+
         placeSpike(level, spike, true);
     }
 
     /**
-     * Places all spike blocks if initial generation flagged them for deferred placement.
-     * Called when a player enters the End — no-op if no regeneration is needed.
+     * Places all spikes if initial generation flagged them for deferred placement.
+     * Called on the first End world tick after chunk generation completes.
      */
     public static void regenerateSpikes(ServerLevel level) {
-        if (!needsRegeneration) return;
         for (SpikeFeature.EndSpike spike : SpikeFeature.getSpikesForLevel(level)) {
             placeSpike(level, spike, true);
         }
-        needsRegeneration = false;
+
         LOGGER.info("Regenerated all End spikes");
     }
 
@@ -107,12 +104,15 @@ public final class CustomEndSpikes {
         // Base center at startY (shifted from tip by lean)
         float baseCxf = tipX - (tipBaseY - startY) * leanX;
         float baseCzf = tipZ - (tipBaseY - startY) * leanZ;
+
         placeIsland(level, baseCxf, baseCzf, startY, baseRadius + 2);
         placeSpire(level, sr, tipX, tipZ, startY, tipBaseY, baseRadius, leanX, leanZ);
         placeTipStructure(level, tipX, tipBaseY, tipZ);
+
         if (spike.isGuarded()) {
             placeCage(level, tipX, crystalBlockY, tipZ, 4);
         }
+
         if (crystals) {
             spawnCrystal(level, sr, tipX, crystalBlockY, tipZ);
         }
