@@ -2,7 +2,7 @@ package dev.rolypolyvole.dragonrevamped
 
 import dev.rolypolyvole.dragonrevamped.worldgen.CustomEndSpikes
 import net.fabricmc.api.DedicatedServerModInitializer
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents
 import net.minecraft.world.level.Level
 
 
@@ -10,10 +10,9 @@ class DragonRevamped : DedicatedServerModInitializer {
     override fun onInitializeServer() {
         println("Dragon Revamped has been initialized!")
 
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register { _, _, destination ->
-            if (destination.dimension() == Level.END) {
-                CustomEndSpikes.regenerateSpikes(destination)
-            }
+        ServerLifecycleEvents.SERVER_STARTED.register { server ->
+            val end = server.getLevel(Level.END) ?: return@register
+            CustomEndSpikes.regenerateSpikes(end)
         }
     }
 
