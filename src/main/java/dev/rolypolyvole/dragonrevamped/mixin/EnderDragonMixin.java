@@ -84,7 +84,7 @@ public abstract class EnderDragonMixin extends Mob implements Enemy {
         this.setCustomName(Component.literal("Ender Dragon").withStyle(ChatFormatting.LIGHT_PURPLE));
 
         var maxHealth = ((RangedAttributeAccessor) getAttribute(Attributes.MAX_HEALTH).getAttribute().value());
-        maxHealth.setMaxValue(4096.0);
+        maxHealth.setMaxValue(Double.MAX_VALUE);
 
         getAttribute(Attributes.EXPLOSION_KNOCKBACK_RESISTANCE).setBaseValue(1.0);
 
