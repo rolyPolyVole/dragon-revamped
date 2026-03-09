@@ -24,8 +24,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+// heavily vibe coded
 // needs desperate format code
-
 
 public final class CustomEndSpikes {
     private CustomEndSpikes() {}

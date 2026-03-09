@@ -26,6 +26,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 // needs format code
+// also kinda vibe coded
 
 class DragonRageAbility(
     dragon: EnderDragon,
