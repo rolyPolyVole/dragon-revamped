@@ -227,6 +227,12 @@ class DragonRageAbility(
         if (this.stateTicks == 20) {
             respawnAllCrystals()
 
+            EntityType.LIGHTNING_BOLT.create(this.level, EntitySpawnReason.MOB_SUMMONED)?.let {
+                it.snapTo(dragon.x, dragon.y, dragon.z)
+                it.setVisualOnly(true)
+                this.level.addFreshEntity(it)
+            }
+
             this.manager.broadcastMessage(
                 Component.empty()
                     .append(Component.literal("[Ender Dragon] ").withStyle(ChatFormatting.DARK_PURPLE))
@@ -302,12 +308,6 @@ class DragonRageAbility(
             crystal.setPos(pos)
             crystal.setShowBottom(false)
             this.level.addFreshEntity(crystal)
-
-            EntityType.LIGHTNING_BOLT.create(this.level, EntitySpawnReason.MOB_SUMMONED)?.let {
-                it.snapTo(pos.x, pos.y, pos.z, 0f, 0f)
-                it.setVisualOnly(true)
-                this.level.addFreshEntity(it)
-            }
 
             val protector = CrystalProtector(this.level)
             protector.equipArmor()
