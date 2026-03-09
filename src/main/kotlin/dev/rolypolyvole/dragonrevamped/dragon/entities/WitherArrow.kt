@@ -13,7 +13,7 @@ import net.minecraft.world.entity.projectile.arrow.Arrow
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.level.Level
 
-class BlindnessArrow(
+class WitherArrow(
     level: Level,
     shooter: LivingEntity,
     pickupItem: ItemStack,
@@ -47,15 +47,13 @@ class BlindnessArrow(
     override fun doPostHurtEffects(target: LivingEntity) {
         super.doPostHurtEffects(target)
 
-        target.addEffect(MobEffectInstance(MobEffects.WITHER, 85, 1))
-
         if (Math.random() < 0.2) {
             target.addEffect(MobEffectInstance(MobEffects.DARKNESS, 85, 0))
         }
     }
 }
 
-class PhantomMite(level: Level, private val arrow: BlindnessArrow) : Endermite(EntityType.ENDERMITE, level) {
+class PhantomMite(level: Level, private val arrow: WitherArrow) : Endermite(EntityType.ENDERMITE, level) {
 
     init {
         getAttribute(Attributes.MOVEMENT_SPEED)!!.baseValue = 0.3

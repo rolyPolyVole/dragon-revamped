@@ -1,7 +1,10 @@
 package dev.rolypolyvole.dragonrevamped.dragon.entities
 
+import net.minecraft.core.component.DataComponents
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.sounds.SoundEvents
+import net.minecraft.world.effect.MobEffectInstance
+import net.minecraft.world.effect.MobEffects
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.LivingEntity
 import net.minecraft.world.entity.ai.goal.SpearUseGoal
@@ -10,6 +13,7 @@ import net.minecraft.world.entity.monster.skeleton.Skeleton
 import net.minecraft.world.entity.projectile.ProjectileUtil
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.minecraft.world.item.alchemy.PotionContents
 import net.minecraft.world.level.Level
 import net.minecraft.world.phys.Vec3
 import kotlin.math.pow
@@ -51,7 +55,14 @@ open class DragonSkeleton(level: Level) : Skeleton(EntityType.SKELETON, level) {
     override fun performRangedAttack(target: LivingEntity, pullProgress: Float) {
         val hand = ProjectileUtil.getWeaponHoldingHand(this, Items.BOW)
         val bow = this.getItemInHand(hand)
-        val arrow = BlindnessArrow(this.level(), this, ItemStack(Items.ARROW), bow)
+
+        val arrowItem = ItemStack(Items.TIPPED_ARROW).apply {
+            set(DataComponents.POTION_CONTENTS, PotionContents.EMPTY.withEffectAdded(
+                MobEffectInstance(MobEffects.WITHER, 85, 1)
+            ))
+        }
+
+        val arrow = WitherArrow(this.level(), this, arrowItem, bow)
 
         val dx = target.x - this.x
         val dy = target.eyeY - arrow.y
