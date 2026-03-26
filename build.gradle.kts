@@ -23,6 +23,11 @@ java {
 loom {
     splitEnvironmentSourceSets()
 
+    @Suppress("UnstableApiUsage")
+    mixin {
+        useLegacyMixinAp = true
+    }
+
     mods {
         register("dragon-revamped") {
             sourceSet("main")

@@ -34,7 +34,7 @@ public abstract class ServerPlayerMixin extends Player {
         this.deathSource = damageSource;
     }
 
-    @ModifyVariable(method = "die(Lnet/minecraft/world/damagesource/DamageSource;)V", at = @At(value = "STORE", ordinal = 0), name = "component")
+    @ModifyVariable(method = "die(Lnet/minecraft/world/damagesource/DamageSource;)V", at = @At(value = "STORE", ordinal = 0), ordinal = 0)
     private Component customDeathMessage(Component value) {
         if (deathSource == null || deathSource.getDirectEntity() == null) {
             return value;
